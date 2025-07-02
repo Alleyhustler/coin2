@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Protocol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #c3c6ca;
+            --primary-dark: #ffffff;
+            --secondary: #161616;
+            --accent: #4b4b4b;
+            --text: #f4f4f4;
+            --text-secondary: #a8a8a8;
+            --bg: #0a0a0a;
+            --card-bg: rgba(22, 22, 22, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto", sans-serif;
+        }
+
+        body {
+            background-color: ##ffffff;
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+radial-gradient(circle at 25% 25%, rgb(255 255 255 / 15%) 0%, #ffffff00 50%), radial-gradient(circle at 75% 75%, rgb(249 249 249 / 15%) 0%, #ffffff00 50%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        header {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1rem 0;
+        }
+
+        .connect-btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(98, 101, 102, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(202, 202, 202, 0.3);
+        }
+
+        .connect-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        .connect-btn:hover::before {
+            opacity: 1;
+        }
+
+        .connect-btn.connected {
+            background: linear-gradient(135deg, #25d366, #128c7e);
+        }
+
+        .connect-btn.connected::before {
+            background: linear-gradient(135deg, #128c7e, #075e54);
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 100px);
+            padding: 1rem 0;
+            position: relative;
+        }
+
+        .logo-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-orb {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, rgba(15, 98, 254, 0.1) 0%, transparent 70%);
+            animation: pulse 8s infinite alternate;
+        }
+
+        .logo {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            animation: rotate 20s linear infinite, float 6s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(238, 238, 238, 0.5));
+            z-index: 2;
+            transition: all 0.5s ease;
+        }
+
+        .logo:hover {
+            filter: drop-shadow(0 0 25px rgba(0, 198, 255, 0.8));
+            transform: scale(1.05);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.6;
+            font-weight: 300;
+            position: relative;
+        }
+
+        .subtitle::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .banner-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 300px;
+            margin-top: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .banner {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+
+        .banner-container:hover .banner {
+            transform: scale(1.02);
+        }
+
+        .banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        /* Cyberpunk grid elements - made black and more visible */
+        .grid-line {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+        }
+
+        .grid-line.horizontal {
+            width: 100%;
+            height: 1px;
+            left: 0;
+        }
+
+        .grid-line.vertical {
+            width: 1px;
+            height: 100%;
+            top: 0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .logo-container {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .logo {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .banner-container {
+                height: 200px;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-container {
+                width: 180px;
+                height: 180px;
+                margin-bottom: 0.5rem;
+            }
+            
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .banner-container {
+                height: 150px;
+            }
+            
+            .subtitle {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <button id="connectWallet" class="connect-btn">Connect Wallet</button>
+        </header>
+
+        <main class="main-content">
+            <!-- Grid lines for cyberpunk effect - now black and more visible -->
+            <div class="grid-line horizontal" style="top: 20%;"></div>
+            <div class="grid-line horizontal" style="top: 40%;"></div>
+            <div class="grid-line horizontal" style="top: 60%;"></div>
+            <div class="grid-line horizontal" style="top: 80%;"></div>
+            <div class="grid-line vertical" style="left: 20%;"></div>
+            <div class="grid-line vertical" style="left: 40%;"></div>
+            <div class="grid-line vertical" style="left: 60%;"></div>
+            <div class="grid-line vertical" style="left: 80%;"></div>
+
+            <div class="logo-container">
+                <div class="logo-orb"></div>
+                <img src="1.png" alt="Nexus Protocol Logo" class="logo">
+            </div>
+
+            <h2 class="subtitle">A x2 Coin, Coin²</h2>
+
+            <div class="banner-container">
+                <img src="Screenshot 2025-07-02 205810.png" alt="Nexus Protocol Banner" class="banner">
+                <div class="banner-overlay"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const connectBtn = document.getElementById('connectWallet');
+            
+            // Check if Phantom is installed
+            const isPhantomInstalled = () => {
+                return window.phantom?.solana?.isPhantom;
+            };
+
+            // Connect to Phantom wallet
+            const connectWallet = async () => {
+                try {
+                    if (!isPhantomInstalled()) {
+                        alert('Phantom wallet is not installed. Please install it from https://phantom.app/');
+                        return;
+                    }
+
+                    const resp = await window.solana.connect();
+                    if (resp.publicKey.toString()) {
+                        connectBtn.textContent = `Connected: ${resp.publicKey.toString().slice(0, 4)}...${resp.publicKey.toString().slice(-4)}`;
+                        connectBtn.classList.add('connected');
+                    }
+                } catch (err) {
+                    console.error('Connection error:', err);
+                    connectBtn.textContent = 'Connection Failed';
+                    setTimeout(() => {
+                        connectBtn.textContent = 'Connect Wallet';
+                        connectBtn.classList.remove('connected');
+                    }, 2000);
+                }
+            };
+
+            connectBtn.addEventListener('click', connectWallet);
+
+            // If already connected
+            if (window.solana && window.solana.isConnected) {
+                connectBtn.textContent = `Connected: ${window.solana.publicKey.toString().slice(0, 4)}...${window.solana.publicKey.toString().slice(-4)}`;
+                connectBtn.classList.add('connected');
+            }
+
+            // Add event listener for account change
+            if (window.solana) {
+                window.solana.on('accountChanged', (publicKey) => {
+                    if (publicKey) {
+                        connectBtn.textContent = `Connected: ${publicKey.toString().slice(0, 4)}...${publicKey.toString().slice(-4)}`;
+                    } else {
+                        connectBtn.textContent = 'Connect Wallet';
+                        connectBtn.classList.remove('connected');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
